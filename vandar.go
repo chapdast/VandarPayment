@@ -81,6 +81,7 @@ func (v *VandarPaymentVerfiy) errors() string {
 
 func (vp *VandarPayment) RequestPayment(sr *SendRequest) (string, error) {
 	sr.apiKey = vp.APIKey
+	fmt.Println("API", sr.apiKey)
 	requestBody, err := json.Marshal(sr)
 
 	if err != nil {
