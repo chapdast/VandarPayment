@@ -14,7 +14,7 @@ type VandarPayment struct {
 	APIKey string
 }
 
-func (vp *VandarPayment) SetAPIKey(api string) error {
+func (vp *VandarPayment) SetAPIKey(api string){
 	if api != "" {
 		vp.APIKey = api
 		vp.apiEndpoints = apiEndpoints{
