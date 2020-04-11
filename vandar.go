@@ -22,7 +22,7 @@ func (vp *VandarPayment) SetAPIKey(api string){
 			PaymentApi: "https://vandar.io/ipg/",
 			VerifyApi:  "https://vandar.io/api/ipg/verify",
 		}
-		fmt.Println("API SET TO TEST")
+
 	}else{
 		vp.APIKey="test"
 		vp.apiEndpoints = apiEndpoints{
@@ -30,6 +30,7 @@ func (vp *VandarPayment) SetAPIKey(api string){
 			PaymentApi: "https://vandar.io/ipg/test/",
 			VerifyApi:  "https://vandar.io/api/ipg/test/verify",
 		}
+		fmt.Println("API SET TO TEST")
 	}
 }
 
