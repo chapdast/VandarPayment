@@ -69,7 +69,7 @@ type VandarPaymentVerifyRequest struct {
 type VandarPaymentVerfiy struct {
 	Status        int      `json:"status"`
 	Amount        string   `json:"amount"`
-	TransactionID uint      `json:"transId"`
+	TransactionID int      `json:"transId"`
 	FactorID      string   `json:"factorNumber"`
 	Mobile        string   `json:"mobile"`
 	Description   string   `json:"description"`
