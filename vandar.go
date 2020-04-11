@@ -82,6 +82,7 @@ func (v *VandarPaymentVerfiy) errors() string {
 func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
 	sr.apiKey = vp.APIKey
 	requestBody, err := json.Marshal(sr)
+
 	if err != nil {
 		return "", errors.New("err1"+err.Error())
 	}
@@ -93,6 +94,9 @@ func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
 	defer paymentRequest.Body.Close()
 
 	response, err := ioutil.ReadAll(paymentRequest.Body)
+	if err !=nil{
+		return "", errors.New("err2.5"+err.Error())
+	}
 	var vr VandarRequestToken
 	err = json.Unmarshal(response, vr)
 	if err != nil {
