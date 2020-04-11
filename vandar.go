@@ -83,11 +83,12 @@ func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
 	sr.apiKey = vp.APIKey
 	requestBody, err := json.Marshal(sr)
 	if err != nil {
-		return "", err
+		return "", errors.New("err1"+err.Error())
 	}
 	paymentRequest, err := http.Post(vp.PaymentAPIEndpoint.RequestApi, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		return "", err
+
+		return "", errors.New("err2"+err.Error())
 	}
 	defer paymentRequest.Body.Close()
 
@@ -95,10 +96,10 @@ func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
 	var vr VandarRequestToken
 	err = json.Unmarshal(response, vr)
 	if err != nil {
-		return "", err
+		return "", errors.New("err3"+err.Error())
 	}
 	if vr.Status == 0 {
-		return "", errors.New(vr.errors())
+		return "", errors.New("err4"+vr.errors())
 	}
 	return vp.PaymentApi + vr.Token, nil
 }
