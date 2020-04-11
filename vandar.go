@@ -79,7 +79,7 @@ func (v *VandarPaymentVerfiy) errors() string {
 	return fmt.Sprintln(v.Errors)
 }
 
-func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
+func (vp *VandarPayment) RequestPayment(sr *SendRequest) (string, error) {
 	sr.apiKey = vp.APIKey
 	requestBody, err := json.Marshal(sr)
 
@@ -106,7 +106,7 @@ func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
 		return "", err
 	}
 	if vr.Status == 0 {
-		fmt.Println("RP, PayMentResponse",vr)
+		fmt.Println("RP, PaymentResponse",vr)
 		return "", errors.New(vr.errors())
 	}
 	return vp.PaymentApi + vr.Token, nil
