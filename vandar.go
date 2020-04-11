@@ -14,7 +14,7 @@ type VandarPayment struct {
 	APIKey string
 }
 
-func (vp *VandarPayment) SetAPIKey(api string){
+func (vp *VandarPayment) SetAPIKey(api string) {
 	if api != "" {
 		vp.APIKey = api
 		vp.apiEndpoints = apiEndpoints{
@@ -23,8 +23,8 @@ func (vp *VandarPayment) SetAPIKey(api string){
 			VerifyApi:  "https://vandar.io/api/ipg/verify",
 		}
 
-	}else{
-		vp.APIKey="test"
+	} else {
+		vp.APIKey = "test"
 		vp.apiEndpoints = apiEndpoints{
 			RequestApi: "https://vandar.io/api/ipg/test/send",
 			PaymentApi: "https://vandar.io/ipg/test/",
@@ -68,7 +68,7 @@ type VandarPaymentVerifyRequest struct {
 }
 type VandarPaymentVerfiy struct {
 	Status        int      `json:"status"`
-	Amount        int      `json:"amount"`
+	Amount        string   `json:"amount"`
 	TransactionID string   `json:"transId"`
 	FactorID      string   `json:"factorNumber"`
 	Mobile        string   `json:"mobile"`
