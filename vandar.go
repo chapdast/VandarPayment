@@ -84,26 +84,30 @@ func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
 	requestBody, err := json.Marshal(sr)
 
 	if err != nil {
-		return "", errors.New("err1"+err.Error())
+		fmt.Println("RP, marshal",err)
+		return "", err
 	}
 	paymentRequest, err := http.Post(vp.PaymentAPIEndpoint.RequestApi, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-
-		return "", errors.New("err2"+err.Error())
+		fmt.Println("RP, PostRequest",err)
+		return "", err
 	}
 	defer paymentRequest.Body.Close()
 
 	response, err := ioutil.ReadAll(paymentRequest.Body)
 	if err !=nil{
-		return "", errors.New("err2.5"+err.Error())
+		fmt.Println("RP, responseRead",err)
+		return "", err
 	}
 	var vr VandarRequestToken
 	err = json.Unmarshal(response, vr)
 	if err != nil {
-		return "", errors.New("err3"+err.Error())
+		fmt.Println("RP, UnMarshalResponse",err)
+		return "", err
 	}
 	if vr.Status == 0 {
-		return "", errors.New("err4"+vr.errors())
+		fmt.Println("RP, PayMentResponse",vr)
+		return "", errors.New(vr.errors())
 	}
 	return vp.PaymentApi + vr.Token, nil
 }
