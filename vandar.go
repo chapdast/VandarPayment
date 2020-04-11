@@ -102,7 +102,7 @@ func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
 	var vr VandarRequestToken
 	err = json.Unmarshal(response, vr)
 	if err != nil {
-		fmt.Println("RP, UnMarshalResponse",err)
+		fmt.Println("RP, UnMarshalResponse",response,err)
 		return "", err
 	}
 	if vr.Status == 0 {
