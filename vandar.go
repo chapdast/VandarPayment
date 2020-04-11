@@ -31,7 +31,7 @@ func (vp *VandarPayment) CheckData() error {
 }
 
 type SendRequest struct {
-	apiKey      string `json:"api_key"`
+	APIKey      string `json:"api_key"`
 	Amount      int    `json:"amount"`
 	CallbackURL string `json:"callback_url"`
 	Mobile      string `json:"mobile_number"`
@@ -80,44 +80,38 @@ func (v *VandarPaymentVerfiy) errors() string {
 }
 
 func (vp *VandarPayment) RequestPayment(sr *SendRequest) (string, error) {
-	sr.apiKey = vp.APIKey
-	fmt.Println("API", sr.apiKey)
 	requestBody, err := json.Marshal(sr)
 
 	if err != nil {
-		fmt.Println("RP, marshal",err)
+		fmt.Println("RP, marshal", err)
 		return "", err
 	}
 	paymentRequest, err := http.Post(vp.PaymentAPIEndpoint.RequestApi, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		fmt.Println("RP, PostRequest",err)
+		fmt.Println("RP, PostRequest", err)
 		return "", err
 	}
 	defer paymentRequest.Body.Close()
 
 	response, err := ioutil.ReadAll(paymentRequest.Body)
-	if err !=nil{
-		fmt.Println("RP, responseRead",err)
+	if err != nil {
+		fmt.Println("RP, responseRead", err)
 		return "", err
 	}
 	var vr VandarRequestToken
 	err = json.Unmarshal(response, &vr)
 	if err != nil {
-		fmt.Println("RP, UnMarshalResponse",string(response),err)
+		fmt.Println("RP, UnMarshalResponse", string(response), err)
 		return "", err
 	}
 	if vr.Status == 0 {
-		fmt.Println("RP, PaymentResponse",vr)
+		fmt.Println("RP, PaymentResponse", vr)
 		return "", errors.New(vr.errors())
 	}
 	return vp.PaymentApi + vr.Token, nil
 }
-func (vp *VandarPayment) VerifyPayment(token string) (*VandarPaymentVerfiy, error) {
-	pr := VandarPaymentVerifyRequest{
-		APIKey: vp.APIKey,
-		Token:  token,
-	}
-	requestBody, err := json.Marshal(pr)
+func (vp *VandarPayment) VerifyPayment(vr VandarPaymentVerifyRequest) (*VandarPaymentVerfiy, error) {
+	requestBody, err := json.Marshal(vr)
 	if err != nil {
 		return nil, err
 	}
