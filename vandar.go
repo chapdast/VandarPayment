@@ -85,7 +85,7 @@ func (v *VandarPaymentVerfiy) errors() string {
 func (vp *VandarPayment) RequestPayment(sr *SendRequest) (string, error) {
 	fmt.Println("SR", sr.CallbackURL, sr.Mobile, sr.Amount, sr.FactorID)
 	requestBody, err := json.Marshal(sr)
-
+	fmt.Println(string(bytes.NewBuffer(requestBody).Bytes()))
 	if err != nil {
 		fmt.Println("RP, marshal", err)
 		return "", err
