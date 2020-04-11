@@ -14,25 +14,26 @@ type VandarPayment struct {
 	APIKey string
 }
 
-func (vp *VandarPayment) CheckData() error  {
-	if vp.APIKey ==""{
+func (vp *VandarPayment) CheckData() error {
+	if vp.APIKey == "" {
 		return errors.New("API KEY NOT SET")
 	}
-	if vp.VerifyApi == ""{
+	if vp.VerifyApi == "" {
 		return errors.New("VerificationAPI NOT SET")
 	}
-	if vp.PaymentApi == ""{
+	if vp.PaymentApi == "" {
 		return errors.New("PaymentAPI NOT SET")
 	}
-	if vp.RequestApi == ""{
+	if vp.RequestApi == "" {
 		return errors.New("RequestAPI NOT SET")
 	}
 	return nil
 }
+
 type SendRequest struct {
-	apiKey      string `json: "api_key"`
+	apiKey      string `json:"api_key"`
 	Amount      int    `json:"amount"`
-	CallbackURL string `json: "callback_url"`
+	CallbackURL string `json:"callback_url"`
 	Mobile      string `json:"mobile_number"`
 	FactorID    string `json:"factorNumber"`
 	Description string `json:"description"`
@@ -73,6 +74,7 @@ type VandarPaymentVerfiy struct {
 	Message       string   `josn:"message"`
 	Errors        []string `json:"errors"`
 }
+
 func (v *VandarPaymentVerfiy) errors() string {
 	return fmt.Sprintln(v.Errors)
 }
@@ -103,27 +105,27 @@ func (vp *VandarPayment) RequestPayment(sr SendRequest) (string, error) {
 func (vp *VandarPayment) VerifyPayment(token string) (*VandarPaymentVerfiy, error) {
 	pr := VandarPaymentVerifyRequest{
 		APIKey: vp.APIKey,
-		Token: token,
+		Token:  token,
 	}
 	requestBody, err := json.Marshal(pr)
-	if err!=nil{
-		return nil,err
+	if err != nil {
+		return nil, err
 	}
-	verifyRequest, err := http.Post(vp.VerifyApi,"application/json",bytes.NewBuffer(requestBody))
-	if err!=nil{
+	verifyRequest, err := http.Post(vp.VerifyApi, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
 		return nil, err
 	}
 	defer verifyRequest.Body.Close()
 	response, err := ioutil.ReadAll(verifyRequest.Body)
-	if err!=nil{
+	if err != nil {
 		return nil, err
 	}
 	var vpv VandarPaymentVerfiy
-	err= json.Unmarshal(response, vpv)
-	if err !=nil{
+	err = json.Unmarshal(response, vpv)
+	if err != nil {
 		return nil, err
 	}
-	if vpv.Status == 0{
+	if vpv.Status == 0 {
 		return nil, errors.New(vpv.errors())
 	}
 	return &vpv, nil
