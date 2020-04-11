@@ -10,24 +10,27 @@ import (
 )
 
 type VandarPayment struct {
-	PaymentAPIEndpoint
+	apiEndpoints
 	APIKey string
 }
 
-func (vp *VandarPayment) CheckData() error {
-	if vp.APIKey == "" {
-		return errors.New("API KEY NOT SET")
+func (vp *VandarPayment) SetAPIKey(api string) error {
+	if api != "" {
+		vp.APIKey = api
+		vp.apiEndpoints = apiEndpoints{
+			RequestApi: "https://vandar.io/api/ipg/send",
+			PaymentApi: "https://vandar.io/ipg/",
+			VerifyApi:  "https://vandar.io/api/ipg/verify",
+		}
+		fmt.Println("API SET TO TEST")
+	}else{
+		vp.APIKey="test"
+		vp.apiEndpoints = apiEndpoints{
+			RequestApi: "https://vandar.io/api/ipg/test/send",
+			PaymentApi: "https://vandar.io/ipg/test/",
+			VerifyApi:  "https://vandar.io/api/ipg/test/verify",
+		}
 	}
-	if vp.VerifyApi == "" {
-		return errors.New("VerificationAPI NOT SET")
-	}
-	if vp.PaymentApi == "" {
-		return errors.New("PaymentAPI NOT SET")
-	}
-	if vp.RequestApi == "" {
-		return errors.New("RequestAPI NOT SET")
-	}
-	return nil
 }
 
 type SendRequest struct {
@@ -39,7 +42,7 @@ type SendRequest struct {
 	Description string `json:"description"`
 }
 
-type PaymentAPIEndpoint struct {
+type apiEndpoints struct {
 	RequestApi string
 	PaymentApi string
 	VerifyApi  string
@@ -80,13 +83,14 @@ func (v *VandarPaymentVerfiy) errors() string {
 }
 
 func (vp *VandarPayment) RequestPayment(sr *SendRequest) (string, error) {
+	fmt.Println("SR", sr.CallbackURL, sr.Mobile, sr.Amount, sr.FactorID)
 	requestBody, err := json.Marshal(sr)
 
 	if err != nil {
 		fmt.Println("RP, marshal", err)
 		return "", err
 	}
-	paymentRequest, err := http.Post(vp.PaymentAPIEndpoint.RequestApi, "application/json", bytes.NewBuffer(requestBody))
+	paymentRequest, err := http.Post(vp.apiEndpoints.RequestApi, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		fmt.Println("RP, PostRequest", err)
 		return "", err
